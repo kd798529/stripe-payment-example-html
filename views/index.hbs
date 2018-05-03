@@ -1,7 +1,9 @@
-<form action="api/payment" method="POST">
+
+<div>buy my stuff, my stuff is great</div>
+<form action="/charge" method="POST">
   <script
     src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-    data-key="pk_test_6pRNASCoBOKtIshFeQd4XMUh"
+    data-key="pk_test_1ENvPvHwX9kBUaPKsvmU2XZF"
     data-amount="999"
     data-name="Stripe.com"
     data-description="Example charge"
@@ -9,4 +11,5 @@
     data-locale="auto"
     data-zip-code="true">
   </script>
+  <input type="hidden" name="chargeAmount" value="3000">
 </form>

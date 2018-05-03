@@ -1,31 +1,49 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const hbs = require('hbs');
+const stripe = require('stripe')('sk_test_vsxsVedMiX98SQfxctlOpxn1');
 
 const server = express();
 
 
+server.set('view engine', 'hbs');
+server.set('views', __dirname + '/views')
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({extended: false}));
+
+
+
 server.get('/', (req, res) => {
-	res.sendFile(__dirname + '/index.html');
-})
+	res.render('index', {
 
-server.post('/api/payment', (req, res) => {
-	// Set your secret key: remember to change this to your live secret key in production
-// See your keys here: https://dashboard.stripe.com/account/apikeys
-var stripe = require("stripe")("sk_test_BQokikJOvBiI2HlWgH4olfQ2");
-
-// Token is created using Checkout or Elements!
-// Get the payment token ID submitted by the form:
-const token = req.body.stripeToken; // Using Express
-
-const charge = stripe.charges.create({
-  amount: 999,
-  currency: 'usd',
-  description: 'Example charge',
-  source: token,
+  })
 });
 
+server.get('/success', (req, res) => {
+  res.render('success', {
+
+  })
 })
 
+server.post('/charge', (req, res) => {
+  const token = req.body.stripeToken;
+  const chargeAmount = req.body.chargeAmount;
+  const charge = stripe.charges.create({
+    amount: chargeAmount,
+    currency: "usd",
+    source: token
+  }, (err, charge) => {
+    if(err && err.type ==="StripeCardError"){
+      console.log('your card was declined');
+    }
+  })
+  console.log('your payment was successful');
+  res.redirect('/success');
+});
+
+
+
+
 server.listen(3030, () => {
-	console.log('server is running on port 3030')
+	console.log('stripe is running')
 });
